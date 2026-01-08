@@ -1,2 +1,2 @@
 # Backend-Dev
-Introduction to frontend development by Bridgelabz
+Introduction to Backend development by Bridgelabz
