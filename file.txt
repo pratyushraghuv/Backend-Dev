@@ -1,0 +1,22 @@
+pwd # Print working directory
+ls # List directory contents
+ls -l # Long format listing
+ls -a # Show hidden files
+ls -lh # Human-readable file sizes
+cd /path/to/directory # Change directory
+cd .. # Move up one directory
+cd ~ # Go to home directory
+cd - # Go to previous directory
+
+File and Directory Operations
+
+mkdir dirname # Create directory
+mkdir -p dir1/dir2/dir3 # Create nested directories
+rmdir dirname # Remove empty directory
+touch filename # Create empty file or update timestamp
+cp source dest # Copy file
+cp -r source dest # Copy directory recursively
+mv source dest # Move or rename file
+rm filename # Remove file
+rm -r dirname # Remove directory and contents
+rm -rf dirname # Force remove (use carefully!)
