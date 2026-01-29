@@ -1,0 +1,14 @@
+{
+  "name": "expressjs-backend",
+  "version": "1.0.0",
+  "description": "expressjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "author": "pratyush",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
