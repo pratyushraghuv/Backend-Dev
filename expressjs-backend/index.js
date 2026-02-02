@@ -1,44 +1,31 @@
-
-const express = require("express");
-
+const express = require('express');
 const app = express();
 
-const PORT = process.env.PORT || 3000;
-
-const students = [
-    {
-    id: 1,
-    name: "Pratyush",
-    branch: "CSE"
-    },
-    {
-    id: 2,
-    name: "Vansh",
-    branch: "CSE"
-    },
-    {
-    id: 3,
-    name: "Shivam",
-    branch: "CSE"
-    }
+const user = [
+    {"name":"Krish","age":19,"branch":"CSE"},
+    {"name":"Pratyush","age":22,"branch":"Mech"}
 ];
 
-app.get("/", (req, res) => {
-  res.send("welcome to the home page");
+app.get('/', (req, res) => {
+    res.send("Welcome to the Home Page");
 });
 
-app.get("/students" , (req, res) => {
-    res.json(students);
+app.get('/user', (req, res) => {
+    const id = req.query.id;
+    if (!id) {
+        return res.status(404).send("Provide me the correct id");
+    }
+    res.status(200).json(user[id]);
 });
 
-app.get("/students/:id" , (req, res) => {
-    res.send("");
-});
-app.get("students/search",(req,res) =>{
-    const searchQuery = req.query;
-    
+app.get('/branch',(req,res)=>{
+    const branch = req.query.branch;
+    if(!branch) return res.status(404).send("Provide me the correct branchh");
+
+    const data = user.filter(student=>student.branch===branch);
+    return res.json(data);
 })
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(4000, () => {
+    console.log("Server is running.");
 });
