@@ -1,5 +1,8 @@
 const express = require('express');
 const app = express();
+const PORT = 3000;
+
+app.use(express.json());
 
 const user = [
     {"name":"Krish","age":19,"branch":"CSE"},
@@ -26,6 +29,31 @@ app.get('/branch',(req,res)=>{
     return res.json(data);
 })
 
-app.listen(4000, () => {
-    console.log("Server is running.");
+app.post('/students/register', (req, res) => {
+    const { name, age, branch } = req.body;
+
+    if (!name || !age || !branch) {
+        return res.status(401).json({
+            message: "name, age, and branch are required"
+        });
+    }
+
+    if (typeof age !== "number") {
+        return res.status(401).json({
+            message: "age must be a number"
+        });
+    }
+
+    const student = { name, age, branch };
+
+    user.push(student);
+
+    return res.status(201).json({
+        message: "Student added successfully",
+        user
+    });
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
