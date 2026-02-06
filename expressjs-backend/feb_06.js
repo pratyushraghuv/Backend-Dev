@@ -1,83 +1,81 @@
-const express = require('express');
+const fs = require("fs").promises;
+const express = require("express");
 const app = express();
-const fs = require('fs');
-app.use(express.json());
 
-const PORT = 3000;
+app.use(express.json())
 
-
-const data = {
-    "1": {"name":"Krish","age":21,"city":"Delhi"},
-    "2": {"name":"Riya","age":22,"city":"Mumbai"},
-    "3": {"name":"Amit","age":20,"city":"Bangalore"},
-    "4": {"name":"Sneha","age":23,"city":"Chennai"},
-    "5": {"name":"Vikram","age":24,"city":"Kolkata"}
-
-}
-const loadData = ()=>{
-    const raw = fs.readFileSync('E://Backend-Dev//Expressjs-backend//students.json','utf-8');
-    const data = JSON.parse(raw);
-    return data;
-}
-
-const writeData = (data)=>{
-    fs.writeFileSync('E://Backend-Dev//Expressjs-backend//students.json',JSON.stringify(data));
-}
-
-
-app.post("/addStudent",(req,res)=>{
-
-   const students = loadData();
-   const { id,name,age,city } = req.body;
-   const newStudent = {
-       name,age,city
-   }
-   students[id]=newStudent;
-   console.log(students);
-   writeData(students);
-   return res.json({"Message":
-    "New Student Added!!"
-   });  
+const PORT= 3000;
+app.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
 });
 
-app.put("/updateStudent/:id",(req,res)=>{
-    
-   const students = loadData();
-   const { id } = req.params;
-   const { name, age, city } = req.body;
-   
-   if(!students[id]){
-       return res.status(404).json({"Message":"Student not found!!"});
-   }
-   
-   const updatedStudent = {
-       name: name || students[id].name,
-       age: age || students[id].age,
-       city: city || students[id].city
-   }
-   students[id] = updatedStudent;
-   console.log(students);
-   writeData(students);
-   return res.json({"Message":"Student Updated!!"});
-});
 
-app.delete("/deleteStudent/:id",async(req,res)=>{
-    
-   const students = loadData();
-   const { id } = req.params;
-   
-   if(!students[id]){
-       return res.status(404).json({"Message":"Student not found!!"});
-   }
-   
-   delete students[id];
-   console.log(students);
-   writeData(students);
-   return res.json({"Message":"Student Deleted!!"});
-});
+const readStudentsFromFile = async () => {
+  const data = await fs.readFile("./students.json", "utf-8");
+  return JSON.parse(data || "[]");
+};
 
-app.listen(PORT,()=>{
-    console.log(Array.__prototype__);
-    console.log(loadData());
-    console.log("Server is running on ${PORT}!!");
+const writeStudentsToFile = async (records) => {
+  await fs.writeFile("./students.json", JSON.stringify(records, null, 2));
+};
+
+app.get("/students", async(req, res) => {
+    const students= await readStudentsFromFile();
+    return res.status(200).json(students);
 })
+
+app.put("/students/:id", async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res.status(400).json({ message: "Empty body not allowed" });
+    }
+
+    const existingStudents = await readStudentsFromFile();
+
+    const foundIndex = existingStudents.findIndex((s) => s.id === userId);
+    if (foundIndex === -1) {
+      return res.status(404).send("Student not found");
+    }
+
+    existingStudents[foundIndex] = {
+      ...existingStudents[foundIndex],
+      ...req.body,
+    };
+
+    await writeStudentsToFile(existingStudents);
+
+    return res.status(200).json({
+      message: "Updated Successfully",
+      student: existingStudents[foundIndex],
+    });
+  } catch (err) {
+    return res.status(500).json({ message: "Internal Server Error", error: err.message });
+  }
+});
+
+
+app.delete("/students/:id", async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+
+    const existingStudents = await readStudentsFromFile();
+
+    const foundIndex = existingStudents.findIndex((s) => s.id === userId);
+    if (foundIndex === -1) {
+      return res.status(404).send("Student not found");
+    }
+
+    const deletedStudent = existingStudents.splice(foundIndex, 1);
+
+    await writeStudentsToFile(existingStudents);
+
+    return res.status(200).json({
+      message: "Student deleted successfully",
+      deletedStudent: deletedStudent[0],
+    });
+  } catch (err) {
+    return res.status(500).json({ message: "Internal Server Error", error: err.message });
+  }
+});
