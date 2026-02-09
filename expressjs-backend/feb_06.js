@@ -78,4 +78,24 @@ app.delete("/students/:id", async (req, res) => {
   } catch (err) {
     return res.status(500).json({ message: "Internal Server Error", error: err.message });
   }
+
+  app.post("/students", async (req, res) => {
+    try {
+      const { name, age } = req.body;
+      const existingStudents = await readStudentsFromFile();
+      const newStudent = {
+        id: existingStudents.length > 0 ? Math.max(...existingStudents.map(s => s.id)) + 1 : 1,
+        name,
+        age
+      };
+      existingStudents.push(newStudent);
+      await writeStudentsToFile(existingStudents);
+      return res.status(201).json({
+        message: "Student created successfully",
+        student: newStudent
+      });
+    } catch (err) {
+      return res.status(500).json({ message: "Internal Server Error", error: err.message });
+    }
+  });
 });
