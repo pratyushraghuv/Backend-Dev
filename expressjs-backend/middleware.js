@@ -1,5 +1,4 @@
 
-
 const { log } = require("console");
 const express = require("express");
 const fs = require("fs/promises");
@@ -25,6 +24,7 @@ app.use((req, res, next) => {
 const FileauthMiddleware=(req,res,next)=>{
     console.log("I am checking file")
     return res.send("auth failed")
+    next();
 }
 
 app.use((req, res, next) => {
