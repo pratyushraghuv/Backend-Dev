@@ -1,7 +1,17 @@
-
-{
-    "students": [
-    {"name":"Pratyush", "age":"29"},
-    {"name":"Vansh", "age":"26"}
-  ]  
-}
+[
+  {
+    "id": 1,
+    "name": "Shivam",
+    "branch": "CSE"
+  },
+  {
+    "id": 2,
+    "name": "pratyush raghuvanshi",
+    "branch": "cse"
+  },
+  {
+    "id": 3,
+    "name": "Vansh ",
+    "branch": "ME"
+  }
+]

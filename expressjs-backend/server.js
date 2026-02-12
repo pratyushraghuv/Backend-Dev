@@ -1,40 +1,50 @@
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 
 const app = express();
-const PORT = 3000;
-
+const PORT = 8000;
 
 app.use(express.urlencoded({ extended: true }));
-
-
 app.use(express.static(path.join(__dirname, "public")));
-
-let students = [];
-
 
 app.post("/register", (req, res) => {
     const { name, branch } = req.body;
 
-    const newStudent = {
-        id: students.length + 1,
-        name,
-        branch
-    };
+    // Read existing data from file
+    fs.readFile("students.json", "utf-8", (err, data) => {
 
-    students.push(newStudent);
+        let students = [];
 
-    console.log(students);
+        if (!err && data) {
+            students = JSON.parse(data);
+        }
 
-    res.send(`
-        <h2>Student Registered Successfull</h2>
-        <a href="/">Go Back</a>
-    `);
+        const newStudent = {
+            id: students.length + 1,
+            name,
+            branch
+        };
+
+        students.push(newStudent);
+
+        // Write updated data back to file
+        fs.writeFile("students.json", JSON.stringify(students, null, 2), (err) => {
+            if (err) {
+                return res.send("Error saving data");
+            }
+
+            res.send(`
+                <h2>Student Registered Successfully</h2>
+                <a href="/">Go Back</a>
+            `);
+        });
+
+    });
 });
 
-
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+    res.sendFile(path.join(__dirname, "public", "form.html"));
 });
 
 app.listen(PORT, () => {
