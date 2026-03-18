@@ -1,0 +1,60 @@
+Student CRUD Operations Task (MongoDB)
+
+Create a database students collection: students with fields: name, age,
+course, city, and feesPaid.
+
+1.  Create: Insert at least 5 student records Use different courses and
+    mix of feesPaid (true/false) Ensure at least 2 students have the
+    same name
+
+Query: use studentDB
+
+db.students.insertMany([ { name: “Rahul”, age: 21, course: “BCA”, city:
+“Delhi”, feesPaid: true }, { name: “Amit”, age: 23, course: “MCA”, city:
+“Lucknow”, feesPaid: false }, { name: “Priya”, age: 19, course: “BBA”,
+city: “Kanpur”, feesPaid: true }, { name: “Rahul”, age: 22, course:
+“BCA”, city: “Noida”, feesPaid: false }, { name: “Sneha”, age: 24,
+course: “BCA”, city: “Agra”, feesPaid: true }])
+
+2.  Read: Retrieve all students
+
+Query: db.students.find()
+
+Find students with course = “BCA”
+
+Query: db.students.find({ course: “BCA” })
+
+Find students with age > 20
+
+Query: db.students.find({ age: { $gt: 20 } })
+
+Display only name and course fields
+
+Query: db.students.find({}, { name: 1, course: 1, _id: 0 })
+
+3.  Update:
+
+Update city of one student
+
+Query: db.students.updateOne( { name: “Amit” }, { $set: { city:
+“Varanasi” } } )
+
+Change course from BCA to MCA
+
+Query: db.students.updateMany( { course: “BCA” }, { $set: { course:
+“MCA” } } )
+
+Set feesPaid = true for students with age > 22
+
+Query: db.students.updateMany( { age: { $gt: 22 } }, { $set: { feesPaid:
+true } } )
+
+4.  Delete:
+
+Delete students with feesPaid = false
+
+Query: db.students.deleteMany({ feesPaid: false })
+
+Delete students with age < 20
+
+Query: db.students.deleteMany({ age: { $lt: 20 } })
